@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #e0f7fa;
+}
+
+#gameCanvas {
+    border: 2px solid #00796b;
+    background-color: #ffffff;
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+.player {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-image: url('../assets/sprites/player.png');
+    background-size: cover;
+}
+
+.npc {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-image: url('../assets/sprites/npc.png');
+    background-size: cover;
+}
+
+.tile {
+    width: 32px;
+    height: 32px;
+    background-size: cover;
+}
+
+.ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #00796b;
+    font-size: 18px;
+    z-index: 10;
+}
