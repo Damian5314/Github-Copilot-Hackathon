@@ -265,6 +265,11 @@ function resetGameState() {
 
     drawNPCs(); // Redraw NPCs
     drawPlayer(); // Redraw player
+
+    // Resume the game loop if it was paused
+    if (!isBattleActive) {
+        requestAnimationFrame(gameLoop);
+    }
 }
 
 function drawNPCs() {
