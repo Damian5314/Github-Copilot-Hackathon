@@ -234,7 +234,8 @@ function showBattleScreen() {
     }
 
     function npcAttack() {
-        playerHealth = Math.max(0, playerHealth - 15); // NPC deals 15 damage
+        const damage = 15; // NPC deals fixed damage
+        playerHealth = Math.max(0, playerHealth - damage); // Ensure health doesn't drop below 0
         updateHealthBars();
         checkWinCondition();
     }
@@ -251,6 +252,7 @@ function spawnNewNPC() {
             health: 100 // Reset health
         };
     }
+    npcHealth = 100; // Ensure global npcHealth is reset
     drawNPCs(); // Ensure NPCs are redrawn
 }
 
@@ -262,6 +264,8 @@ function resetGameState() {
     player.y = canvas.height / 2;
     isBattleActive = false;
     toggleBattleBar(false); // Hide the battle bar
+
+    playerHealth = 100; // Reset player health to full
 
     drawNPCs(); // Redraw NPCs
     drawPlayer(); // Redraw player
