@@ -251,6 +251,7 @@ function spawnNewNPC() {
             health: 100 // Reset health
         };
     }
+    drawNPCs(); // Ensure NPCs are redrawn
 }
 
 function resetGameState() {
@@ -261,6 +262,20 @@ function resetGameState() {
     player.y = canvas.height / 2;
     isBattleActive = false;
     toggleBattleBar(false); // Hide the battle bar
+
+    drawNPCs(); // Redraw NPCs
+    drawPlayer(); // Redraw player
+}
+
+function drawNPCs() {
+    npcs.forEach(npc => {
+        ctx.fillStyle = npc.color;
+        ctx.fillRect(npc.x, npc.y, npc.size, npc.size);
+    });
+}
+
+function drawPlayer() {
+    ctx.drawImage(playerImage, player.x, player.y, player.size, player.size);
 }
 
 const playerImage = new Image();
