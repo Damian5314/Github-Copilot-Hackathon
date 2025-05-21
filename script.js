@@ -14,13 +14,18 @@ const player = {
     speed: 5
 };
 
-// NPC properties
-const npc = {
-    x: 160,
-    y: 64,
-    size: 20,
-    color: 'red'
-};
+// Add multiple NPCs and trees to the map
+const npcs = [
+    { x: 160, y: 64, size: 20, color: 'red', health: 100 },
+    { x: 300, y: 200, size: 20, color: 'orange', health: 100 },
+    { x: 500, y: 400, size: 20, color: 'purple', health: 100 }
+];
+
+const trees = [
+    { x: 100, y: 100, size: 30, color: 'green' },
+    { x: 400, y: 300, size: 30, color: 'green' },
+    { x: 600, y: 150, size: 30, color: 'green' }
+];
 
 // Key press tracking
 const keys = {
@@ -58,8 +63,18 @@ function checkCollision(rect1, rect2) {
     );
 }
 
+function toggleBattleBar(show) {
+    const bottomBar = document.querySelector('.bottom-bar');
+    if (show) {
+        bottomBar.classList.add('active');
+    } else {
+        bottomBar.classList.remove('active');
+    }
+}
+
 function showBattleScreen() {
     isBattleActive = true;
+    toggleBattleBar(true); // Show the battle bar
 
     const battleScreen = document.createElement('div');
     battleScreen.id = 'battleScreen';
@@ -159,6 +174,7 @@ function showBattleScreen() {
     bottomSection.style.flexDirection = 'column';
     bottomSection.style.justifyContent = 'space-around';
     bottomSection.style.alignItems = 'center';
+    bottomSection.classList.add('bottom-bar'); // Add class for toggling
     battleScreen.appendChild(bottomSection);
 
     const actionText = document.createElement('div');
@@ -173,17 +189,31 @@ function showBattleScreen() {
     actionButtons.style.justifyContent = 'space-around';
     bottomSection.appendChild(actionButtons);
 
-    const attackTackleButton = document.createElement('button');
-    attackTackleButton.textContent = 'Tackle';
-    attackTackleButton.style.padding = '10px 20px';
-    attackTackleButton.style.fontSize = '16px';
-    actionButtons.appendChild(attackTackleButton);
+    const moves = [
+        { name: 'Tackle', damage: 10 },
+        { name: 'Fireball', damage: 20 },
+        { name: 'Slash', damage: 15 }
+    ]; // Removed the 'Heal' option
 
-    const attackFireballButton = document.createElement('button');
-    attackFireballButton.textContent = 'Fireball';
-    attackFireballButton.style.padding = '10px 20px';
-    attackFireballButton.style.fontSize = '16px';
-    actionButtons.appendChild(attackFireballButton);
+    for (let i = 0; i < 3; i++) {
+        const move = moves[i];
+        const button = document.createElement('button');
+        button.textContent = move.name;
+        button.style.padding = '10px 20px';
+        button.style.fontSize = '16px';
+        actionButtons.appendChild(button);
+
+        button.addEventListener('click', () => {
+            if (move.damage > 0) {
+                npcHealth = Math.max(0, npcHealth - move.damage); // Player deals damage
+            } else {
+                playerHealth = Math.min(100, playerHealth - move.damage); // Player heals
+            }
+            updateHealthBars();
+            checkWinCondition();
+            if (npcHealth > 0 && move.damage > 0) npcAttack(); // NPC attacks if still alive
+        });
+    }
 
     function updateHealthBars() {
         npcHealthBar.style.width = `${npcHealth}%`;
@@ -208,26 +238,19 @@ function showBattleScreen() {
         updateHealthBars();
         checkWinCondition();
     }
-
-    attackTackleButton.addEventListener('click', () => {
-        npcHealth = Math.max(0, npcHealth - 10); // Player deals 10 damage
-        updateHealthBars();
-        checkWinCondition();
-        if (npcHealth > 0) npcAttack(); // NPC attacks if still alive
-    });
-
-    attackFireballButton.addEventListener('click', () => {
-        npcHealth = Math.max(0, npcHealth - 20); // Player deals 20 damage
-        updateHealthBars();
-        checkWinCondition();
-        if (npcHealth > 0) npcAttack(); // NPC attacks if still alive
-    });
 }
 
 function spawnNewNPC() {
-    npc.x = Math.random() * (canvas.width - npc.size);
-    npc.y = Math.random() * (canvas.height - npc.size);
-    npcHealth = 100; // Reset NPC health for the new battle
+    const defeatedNPCIndex = npcs.findIndex(npc => npc.health <= 0);
+    if (defeatedNPCIndex !== -1) {
+        npcs[defeatedNPCIndex] = {
+            x: Math.random() * (canvas.width - 20),
+            y: Math.random() * (canvas.height - 20),
+            size: 20,
+            color: 'red', // Reset to default color
+            health: 100 // Reset health
+        };
+    }
 }
 
 function resetGameState() {
@@ -237,6 +260,7 @@ function resetGameState() {
     player.x = canvas.width / 2;
     player.y = canvas.height / 2;
     isBattleActive = false;
+    toggleBattleBar(false); // Hide the battle bar
 }
 
 const playerImage = new Image();
@@ -255,24 +279,34 @@ function gameLoop() {
     ctx.fillStyle = 'green';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Draw trees
+    trees.forEach(tree => {
+        ctx.fillStyle = tree.color;
+        ctx.fillRect(tree.x, tree.y, tree.size, tree.size);
+    });
+
     // Update player position with boundary checks
     if (keys.ArrowUp && player.y > 0) player.y -= player.speed;
     if (keys.ArrowDown && player.y + player.size <= canvas.height) player.y += player.speed;
     if (keys.ArrowLeft && player.x > 0) player.x -= player.speed;
     if (keys.ArrowRight && player.x + player.size <= canvas.width) player.x += player.speed;
 
-    // Check for collision with NPC
-    if (checkCollision(player, npc)) {
-        showBattleScreen();
-        return;
-    }
+    // Check for collision with any NPC
+    npcs.forEach(npc => {
+        if (checkCollision(player, npc)) {
+            showBattleScreen();
+            return;
+        }
+    });
 
     // Draw the player image
     ctx.drawImage(playerImage, player.x, player.y, player.size, player.size);
 
-    // Draw the NPC
-    ctx.fillStyle = npc.color;
-    ctx.fillRect(npc.x, npc.y, npc.size, npc.size);
+    // Draw NPCs
+    npcs.forEach(npc => {
+        ctx.fillStyle = npc.color;
+        ctx.fillRect(npc.x, npc.y, npc.size, npc.size);
+    });
 
     requestAnimationFrame(gameLoop);
 }

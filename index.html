@@ -12,10 +12,58 @@
         canvas {
             display: block;
         }
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+            background-color: white;
+            display: none; /* Hide by default */
+        }
+        .bottom-bar.active {
+            display: flex; /* Show when active */
+        }
+        .left-section {
+            width: 50%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .right-section {
+            width: 50%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .battle-button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .battle-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
+    <div class="bottom-bar">
+        <div class="left-section">
+            <p>Game Information or Text Here</p>
+        </div>
+        <div class="right-section">
+            <button class="battle-button">Attack</button>
+            <button class="battle-button">Defend</button>
+            <button class="battle-button">Item</button>
+            <button class="battle-button">Run</button>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
