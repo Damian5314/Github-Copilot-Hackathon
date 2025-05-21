@@ -276,6 +276,44 @@ function resetGameState() {
     }
 }
 
+function showWelcomeScreen() {
+    const welcomeScreen = document.createElement('div');
+    welcomeScreen.id = 'welcomeScreen';
+    welcomeScreen.style.position = 'absolute';
+    welcomeScreen.style.top = '0';
+    welcomeScreen.style.left = '0';
+    welcomeScreen.style.width = '100%';
+    welcomeScreen.style.height = '100%';
+    welcomeScreen.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    welcomeScreen.style.display = 'flex';
+    welcomeScreen.style.flexDirection = 'column';
+    welcomeScreen.style.justifyContent = 'center';
+    welcomeScreen.style.alignItems = 'center';
+    welcomeScreen.style.color = 'white';
+    welcomeScreen.style.fontFamily = 'Arial, sans-serif';
+
+    const title = document.createElement('h1');
+    title.textContent = 'Welcome to the Pokémon Game!';
+    title.style.marginBottom = '20px';
+    welcomeScreen.appendChild(title);
+
+    const startButton = document.createElement('button');
+    startButton.textContent = 'Start Game';
+    startButton.style.padding = '10px 20px';
+    startButton.style.fontSize = '18px';
+    startButton.style.cursor = 'pointer';
+    startButton.addEventListener('click', () => {
+        document.body.removeChild(welcomeScreen);
+        gameLoop(); // Start the game loop
+    });
+    welcomeScreen.appendChild(startButton);
+
+    document.body.appendChild(welcomeScreen);
+}
+
+// Show the welcome screen before starting the game
+showWelcomeScreen();
+
 function drawNPCs() {
     npcs.forEach(npc => {
         ctx.fillStyle = npc.color;
