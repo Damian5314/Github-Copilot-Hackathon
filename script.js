@@ -150,17 +150,17 @@ function showBattleScreen() {
     middleSection.style.alignItems = 'center';
     battleScreen.appendChild(middleSection);
 
-    const npcSprite = document.createElement('div');
+    const npcSprite = document.createElement('img');
+    npcSprite.src = enemyImage.src; // Use the updated enemy image
     npcSprite.style.width = '100px';
     npcSprite.style.height = '100px';
-    npcSprite.style.backgroundColor = 'red';
     npcSprite.style.borderRadius = '50%';
     middleSection.appendChild(npcSprite);
 
-    const playerSprite = document.createElement('div');
+    const playerSprite = document.createElement('img');
+    playerSprite.src = playerImage.src; // Use the player image
     playerSprite.style.width = '100px';
     playerSprite.style.height = '100px';
-    playerSprite.style.backgroundColor = 'blue';
     playerSprite.style.borderRadius = '50%';
     middleSection.appendChild(playerSprite);
 
@@ -191,7 +191,7 @@ function showBattleScreen() {
 
     const moves = [
         { name: 'Tackle', damage: 10 },
-        { name: 'Fireball', damage: 20 },
+        { name: 'Razor Leaf', damage: 20 }, // Changed from "Fireball" to "Razor Leaf"
         { name: 'Slash', damage: 15 }
     ]; // Removed the 'Heal' option
 
@@ -283,12 +283,15 @@ function drawNPCs() {
     });
 }
 
+const playerImage = new Image();
+playerImage.src = 'https://img.pokemondb.net/sprites/black-white/normal/bulbasaur.png';
+
+const enemyImage = new Image();
+enemyImage.src = 'https://img.pokemondb.net/sprites/diamond-pearl/normal/mewtwo.png'; // Updated to Mewtwo sprite
+
 function drawPlayer() {
     ctx.drawImage(playerImage, player.x, player.y, player.size, player.size);
 }
-
-const playerImage = new Image();
-playerImage.src = 'player.png';
 
 playerImage.onload = () => {
     // Ensure the image is loaded before starting the game loop
